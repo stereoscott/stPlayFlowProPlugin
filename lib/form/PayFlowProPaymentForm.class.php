@@ -19,9 +19,7 @@ class PayFlowProPaymentForm extends BasePayFlowProForm
       'exp',
     );
     
-    
-    $this->widgetSchema->setHelp('cvv2', '3- or 4-digit code on printed on back of your card');
-    
+        
     $this->useFields($fields);
     
     foreach ($fields as $field) {

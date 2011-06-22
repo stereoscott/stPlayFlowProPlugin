@@ -14,6 +14,11 @@ class PayFlowProForm extends BasePayFlowProForm
   public function configure()
   {
     parent::configure();
+
+    $promoForm = new PromoCodeCheckoutForm();
+    $this->embedForm('PromoCodeCheckout', $promoForm);    
+    
+    $this->widgetSchema->setLabel('PromoCodeCheckout', ' ');
     
     $this->validatorSchema->setPostValidator(new stValidatorPayFlowProTransaction($this));
   }

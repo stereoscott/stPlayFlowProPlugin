@@ -23,14 +23,11 @@ class PayFlowProAddressForm extends BasePayFlowProForm
       'email',
     ));
 
-    $this->widgetSchema['state'] = new sfWidgetFormSelectUSState();
-    $this->widgetSchema['country'] = new sfWidgetFormSelect(array('choices'=>array('US' => 'United States')));
+
     $promoForm = new PromoCodeCheckoutForm();
-    $this->embedForm('PromoCodeCheckout', $promoForm);
+    $this->embedForm('PromoCodeCheckout', $promoForm);    
     
-    
-    $this->validatorSchema['email'] = new sfValidatorEmail();
-    
+  
     $requiredFields = array('lname', 'street', 'city', 'state', 'zip', 'country', 'email');
     foreach ($requiredFields as $field) {
       $this->validatorSchema[$field]->setOption('required', true);
@@ -38,8 +35,7 @@ class PayFlowProAddressForm extends BasePayFlowProForm
     
     
     $this->widgetSchema->setLabel('PromoCodeCheckout', ' ');
-    $this->widgetSchema->setHelp('fname', 'Please use the name and address that matches your credit card account.');
-    $this->widgetSchema->setHelp('email', 'This email address will receive billing transaction details.');
+
     $this->widgetSchema->setFormFormatterName('simple');
     
   }

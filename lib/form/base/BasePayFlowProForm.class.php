@@ -10,12 +10,18 @@ class BasePayFlowProForm extends sfForm
 {
   const ATTRIBUTE_NAMESPACE = 'stPayFlowPro/checkout';
   
-  protected static $creditCardOptions = array('Visa' => 'Visa', 'Mastercard' => 'Mastercard');
+  protected static $creditCardOptions = array('Visa' => 'Visa', 'Mastercard' => 'Mastercard', 'American Express' => 'American Express', 'Discover' => 'Discover');
   
   protected $amount, $orderNumber, $orderDescription;
   
   protected $transactionResponseArray, $responseMessage, $validTransaction;
-    
+  
+  // Turn off CSRF protection, as on a split form the generated token on each page was differetnnt
+  public function __construct($defaults = array(), $options = array(), $CSRFSecret = null)
+  {
+    parent::__construct($defaults, $options, false);
+  }
+  
   public function configure()
   {
     $years = range(date('Y'), date('Y') + 10);
@@ -43,12 +49,19 @@ class BasePayFlowProForm extends sfForm
       'state'   => new sfValidatorString(),
       'zip'     => new sfValidatorString(),
       'country' => new sfValidatorString(),
-      'email'   => new sfValidatorEmail(),
+      'email'   => new sfValidatorEmail(array('required' => false)),
       'acct'    => new sfValidatorString(),
       'cvv2'    => new sfValidatorString(),
       'card'    => new sfValidatorString(),
       'exp'     => new stValidatorExpirationDate(),
     ));
+    
+    $this->widgetSchema['state'] = new sfWidgetFormSelectUSState();
+    $this->widgetSchema['country'] = new sfWidgetFormSelect(array('choices'=>array('US' => 'United States')));
+    
+    $this->widgetSchema->setHelp('fname', 'Please use the name and address that matches your credit card account.');
+    $this->widgetSchema->setHelp('email', 'This email address will receive billing transaction details.');
+    $this->widgetSchema->setHelp('cvv2', '3- or 4-digit code on printed on back of your card');
     
     $this->widgetSchema->setNameFormat('payment[%s]');
   
@@ -207,23 +220,6 @@ class BasePayFlowProForm extends sfForm
     
     return $protectedValues;
   }
-  
-  public function useFields(array $fields = array(), $ordered = true) 
-  { 
-    foreach ($this->widgetSchema->getPositions() as $field) 
-    { 
-      if (!in_array($field, $fields)) 
-      { 
-        $this->offsetUnset($field);
-      } 
-    } 
-  
-    if ($ordered)
-    { 
-      $this->widgetSchema->setPositions($fields); 
-    } 
-  }
-  
 }
 
 
